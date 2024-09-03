@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Random Food Generator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f4;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+    .container:hover {
+      transform: translateY(-5px);
+    }
+    .food-image {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      object-fit: cover;
+    }
+    .food-name {
+      margin: 15px 0 5px;
+      font-size: 24px;
+      color: #333;
+    }
+    .food-desc {
+      font-size: 14px;
+      color: #666;
+    }
+    .generate-btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      background-color: #FF6347;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .generate-btn:hover {
+      background-color: #FF4500;
+    }
+    @media screen and (max-width: 768px) {
+      .container {
+        width: 90%;
+      }
+    }
+    @media screen and (max-width: 480px) {
+      .food-name {
+        font-size: 20px;
+      }
+      .food-desc {
+        font-size: 12px;
+      }
+      .generate-btn {
+        padding: 8px 16px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" id="food-container">
+    <img src="https://via.placeholder.com/400" alt="Food Image" class="food-image" id="food-image">
+    <h2 class="food-name" id="food-name">Food Name</h2>
+    <p class="food-desc" id="food-desc">Click the button to generate a random food and hear a sound!</p>
+    <button class="generate-btn" id="generate-btn">want to try mor</button>
+  </div>
+
+  <audio id="click-sound" src="https://www.soundjay.com/button/sounds/button-3.mp3"></audio>
+
+  <script>
+    const foodContainer = document.getElementById('food-container');
+    const foodImage = document.getElementById('food-image');
+    const foodName = document.getElementById('food-name');
+    const foodDesc = document.getElementById('food-desc');
+    const generateBtn = document.getElementById('generate-btn');
+    const clickSound = document.getElementById('click-sound');
+
+    async function getRandomFood() {
+      try {
+        const response = await fetch('https://www.themealdb.com/api/json/v1/1/random.php');
+        const data = await response.json();
+        const food = data.meals[0];
+
+        foodImage.src = food.strMealThumb;
+        foodName.textContent = food.strMeal;
+        foodDesc.textContent = food.strInstructions.slice(0, 100) + '...';
+      } catch (error) {
+        console.error('Error fetching food:', error);
+      }
+    }
+
+    generateBtn.addEventListener('click', () => {
+      clickSound.play();
+      getRandomFood();
+
+      // Add a bounce animation to the container
+      foodContainer.style.transform = 'scale(1.05)';
+      setTimeout(() => {
+        foodContainer.style.transform = 'scale(1)';
+      }, 300);
+    });
+  </script>
+
+</body>
+</html>
